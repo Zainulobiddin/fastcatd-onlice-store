@@ -16,25 +16,60 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Typography from "@mui/material/Typography";
-import { InputAdornment, TextField } from "@mui/material";
+import { InputAdornment, Slider, TextField } from "@mui/material";
 import { useProducts } from "@/store/products/products";
-import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useGetCategories } from "@/store/category/category";
 
 export default function AllProducts() {
-  const { products, getProducts } = useProducts();
+  const { products, getProducts, priceRange, categotyByID, brands, getBrand, getBrandByID } = useProducts();
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const { categories, getCategories } = useGetCategories();
+
+  const handleChange = (event, newValue) => {
+    setMinPrice(newValue);
+  };
+
+  const handleChange1 = (event, newValue) => {
+    setMaxPrice(newValue);
+  };
+
 
   useEffect(() => {
     getProducts();
+    getCategories();
+    getBrand()
   }, []);
 
+  function handleApply() {
+    priceRange(minPrice, maxPrice);
+  }
+
+  function handleCategory(id) {
+    categotyByID(id)
+  }
+
+
+  // function handleBrandById
+  function handleBrandById(id) {
+    getBrandByID(id)
+  }
+
+  function handleAllBrand() {
+    getProducts()
+  }
+
+
+
   return (
-    <div>
-      <div className="flex flex-col lg:flex-row w-full items-start md:gap-2 px-4 lg:justify-between lg:items-center my-5">
+    <div className="py-10">
+      <div className="flex flex-col lg:flex-row w-full md:gap-2 px-4 lg:justify-between lg:items-center my-5">
         <p>
           Home / <span>Explore Our Products</span>
         </p>
-        <Box className="flex flex-col gap-2 lg:flex-row w-full ">
+
+        <Box className="flex flex-col gap-2 lg:flex-row w-full justify-between">
           <Box sx={{ minWidth: "100%" }}>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Populary</InputLabel>
@@ -53,7 +88,7 @@ export default function AllProducts() {
             </FormControl>
           </Box>
 
-          <Box sx={{ minWidth: "100%" }} className="lg:hidden">
+          <Box className="lg:hidden">
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Filter</InputLabel>
               <Select
@@ -69,6 +104,7 @@ export default function AllProducts() {
               </Select>
             </FormControl>
           </Box>
+
         </Box>
       </div>
 
@@ -96,34 +132,31 @@ export default function AllProducts() {
         </Box>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-start gap-10 ">
-        <aside className="lg:w-[20%] w-[90%] m-auto mt-[30px] hidden lg:flex flex-col gap-2.5 ">
+      <div className="flex flex-col lg:flex-row  gap-10 ">
+        <aside className="lg:w-[20%] w-[30%] mt-[30px] hidden lg:flex flex-col gap-2.5">
           <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls="panel1-content"
               id="panel1-header"
             >
-              <Typography component="span">Category</Typography>
+              <Typography component="span"><b>Category</b></Typography>
             </AccordionSummary>
-            <AccordionDetails className="text-[#DB4444]">
+
+            <AccordionDetails  className="text-[#DB4444] cursor-pointer">
               All products
             </AccordionDetails>
-            <AccordionDetails className="text-[#505050]">
-              Electronics
+
+             {categories.map((category) => (
+            <AccordionDetails>
+            <ul key={category.id}>
+              <li onClick={() => handleCategory(category.id)} className="bg-[#F5F5F5] cursor-pointer hover:text-[#DB4444] px-3 py-3 rounded-[4px] lg:bg-white lg:px-0 lg:py-0">
+                {category.categoryName}
+              </li>
+            </ul>
             </AccordionDetails>
-            <AccordionDetails className="text-[#505050]">
-              Home & Lifestyle
-            </AccordionDetails>
-            <AccordionDetails className="text-[#505050]">
-              Medicine
-            </AccordionDetails>
-            <AccordionDetails className="text-[#505050]">
-              Sports & Outdoor
-            </AccordionDetails>
-            <AccordionDetails className="text-[#DB4444]">
-              See all
-            </AccordionDetails>
+          ))}
+
           </Accordion>
 
           <Accordion>
@@ -132,30 +165,18 @@ export default function AllProducts() {
               aria-controls="panel1-content"
               id="panel1-header"
             >
-              <Typography component="span">Brands</Typography>
+              <Typography component="span"><b>Brands</b></Typography>
             </AccordionSummary>
+
+            {brands.map((brand) => (
             <AccordionDetails className="text-[#505050] flex gap-3">
-              <input type="checkbox" />
-              Samsung
+              <input type="checkbox" onChange={() => handleBrandById(brand.id) }/>
+              {brand.brandName}
             </AccordionDetails>
-            <AccordionDetails className="text-[#505050] flex gap-3">
-              <input type="checkbox" />
-              Apple
-            </AccordionDetails>
-            <AccordionDetails className="text-[#505050] flex gap-3">
-              <input type="checkbox" />
-              Huawei
-            </AccordionDetails>
-            <AccordionDetails className="text-[#505050] flex gap-3">
-              <input type="checkbox" />
-              Pocco
-            </AccordionDetails>
-            <AccordionDetails className="text-[#505050] flex gap-3">
-              <input type="checkbox" />
-              Lenovo
-            </AccordionDetails>
-            <AccordionDetails className="text-[#DB4444] flex gap-3">
-              <input type="checkbox" />
+
+            ))}
+            <AccordionDetails className="text-[rgb(219,68,68)] flex gap-3">
+              <input type="checkbox" onChange={handleAllBrand}/>
               See all
             </AccordionDetails>
           </Accordion>
@@ -194,11 +215,69 @@ export default function AllProducts() {
             </AccordionDetails>
           </Accordion>
 
-          <div className="flex justify-center border-[1px] border-[#DB4444] rounded-[4px] my-2.5  ">
-            <button className="py-2.5 font-semibold poppins text-[#DB4444] text-[18px] ">
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1-content"
+              id="panel1-header"
+            >
+              <Typography component="span">Price range</Typography>
+            </AccordionSummary>
+
+            <AccordionDetails className="text-[#505050] flex gap-3">
+              <Slider
+                value={minPrice}
+                onChange={handleChange}
+                aria-label="Default"
+                valueLabelDisplay="auto"
+                min={0}
+                max={100000}
+              />
+              <Slider
+                value={maxPrice}
+                onChange={handleChange1}
+                aria-label="Default"
+                valueLabelDisplay="auto"
+                min={0}
+                max={100000}
+              />
+            </AccordionDetails>
+
+            <AccordionDetails className="text-[#505050] flex gap-3">
+              <Box
+                component="form"
+                sx={{ "& > :not(style)": { m: 1, width: "11ch" } }}
+                noValidate
+                autoComplete="off"
+                className="flex"
+              >
+                <TextField
+                  id="outlined-basic"
+                  label="Min"
+                  variant="outlined"
+                  value={minPrice}
+                  onChange={({ target }) => setMinPrice(target.value)}
+                />
+                <TextField
+                  id="outlined-basic"
+                  label="Max"
+                  variant="outlined"
+                  value={maxPrice}
+                  onChange={({ target }) => setMaxPrice(target.value)}
+                />
+              </Box>
+            </AccordionDetails>
+          </Accordion>
+
+          <div
+            onClick={handleApply}
+            className="flex cursor-pointer justify-center border-[1px] border-[#DB4444] rounded-[4px] my-2.5  "
+          >
+            <button className="py-2.5 cursor-pointer font-semibold poppins text-[#DB4444] text-[18px] ">
               Apply
             </button>
           </div>
+
           <Accordion>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -255,7 +334,8 @@ export default function AllProducts() {
           </Accordion>
         </aside>
 
-        <div className=" lg:w-[75%] flex flex-wrap lg:flex-row items-center lg:justify-between py-8 gap-3.5 w-[90%] m-auto justify-center  ">
+
+        <div className=" lg:w-[75%] ml-20 flex flex-wrap lg:flex-row  items-center lg:justify-between py-8 gap-3.5 w-[90%] m-auto justify-center  ">
           {products?.products?.map((product) => (
             <div className="flex flex-col gap-2">
               <div
@@ -296,15 +376,8 @@ export default function AllProducts() {
               </div>
             </div>
           ))}
-
-          <div className="flex justify-start lg:justify-center px-4">
-            <Link to={"/all-products"}>
-              <button className="px-12 py-4 cursor-pointer bg-[#DB4444] text-[#FAFAFA] rounded-[4px] font-normal poppins  ">
-                More Products
-              </button>
-            </Link>
-          </div>
         </div>
+
       </div>
     </div>
   );

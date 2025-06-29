@@ -13,16 +13,16 @@ import {
 import CardRed from "@/components/card-red/card-red";
 import Time from "@/components/time/time";
 import Arrow from "@/components/arrow/arrow";
-import iphone from "#/iphone.svg";
-import arrowRightW from "#/arrowRightW.svg";
 import music from "#/music.svg";
-import Iphone1 from "#/Iphone1.svg";
 import grid1 from "#/grid1.svg";
 import grid2 from "#/grid2.svg";
 import grid3 from "#/grid3.svg";
 import free1 from "#/free.svg";
 import free2 from "#/free2.svg";
 import free3 from "#/free3.svg";
+import imgMain1 from "#/imgMain1.svg";
+import imgMain3 from "#/imgMain3.jpg";
+import imgMain4 from "#/imgMain4.jpg";
 import grid4 from "#/grid4.svg";
 import Products from "@/components/products/products";
 import Categories from "@/components/categories/categories";
@@ -33,12 +33,11 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { useGetCategories } from "@/store/category/category";
 export default function Home() {
-  const {categories, getCategories} = useGetCategories()
+  const { categories, getCategories } = useGetCategories();
 
-    useEffect(() =>{
-      getCategories()
-    }, [])
-
+  useEffect(() => {
+    getCategories();
+  }, []);
 
   return (
     <div>
@@ -66,87 +65,50 @@ export default function Home() {
       </div>
 
       <section className="flex flex-col  lg:flex-row gap-10 items-center  py-5 ">
-       <section className="lg:w-[18%] flex flex-col  gap-4 lg:border-r-[1px] px-4 lg:border-[#0000001A] pr-5 ">
-        {categories.map((categoryName) => (
-          <ul className="">
-            <li className="bg-[#F5F5F5] cursor-pointer hover:text-[#DB4444] px-3 py-3 rounded-[4px] lg:bg-white lg:px-0 lg:py-0">{categoryName.categoryName}</li>
-          </ul>
-        ))}
-      </section>
-        <div className="w-[100%] lg:w-full max-w-[900px] mx-auto py-10 lg:h-[500px] ">
+        <section className="lg:w-[18%] flex flex-wrap lg:flex-col  gap-4 lg:border-r-[1px] px-4 lg:border-[#0000001A] pr-5 ">
+          {categories.map((categoryName) => (
+            <ul className="" key={categoryName.id}>
+              <li className="bg-[#F5F5F5] cursor-pointer hover:text-[#DB4444] px-3 py-3 rounded-[4px] lg:bg-white lg:px-0 lg:py-0">
+                {categoryName.categoryName}
+              </li>
+            </ul>
+          ))}
+        </section>
+
+        <div className="w-[90%] lg:w-full max-w-[900px] mx-auto py-10  ">
           <Swiper
             modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
             spaceBetween={30}
             slidesPerView={1}
-            scrollbar={{ draggable: true }}
             autoplay={{ delay: 2500, disableOnInteraction: false }}
-            onSlideChange={() => console.log("slide change")}
-            onSwiper={(swiper) => console.log(swiper)}
           >
-            <SwiperSlide>
-              <div className="w-full lg:h-[444px] flex items-center justify-center ">
-                <div className="flex flex-col lg:flex-row gap-9 items-center px-5 py-7 bg-black text-white ">
-                  <div className="flex flex-col gap-5">
-                    <div className="flex gap-4 items-center">
-                      <img className="" src={iphone} alt="" />
-                      <p className="poppins">iPhone 14 Series</p>
-                    </div>
-                    <h3 className="inter font-semibold text-[48px] leading-[60px] tracking-[4%] inter ">
-                      Up to 10% off Voucher
-                    </h3>
-                    <div className="flex gap-2 items-center">
-                      <p className="underline poppins font-normal ">Shop Now</p>
-                      <img src={arrowRightW} alt="" />
-                    </div>
-                  </div>
-                  <img src={Iphone1} alt="" />
-                </div>
-              </div>
+            <SwiperSlide className="w-full">
+              <img
+                className="w-full object-cover lg:h-[344px] h-auto"
+                src={imgMain1}
+                alt=""
+              />
             </SwiperSlide>
-            <SwiperSlide>
-              <div className="lg:h-[444px] flex items-center justify-center   ">
-                <div className="flex flex-col lg:flex-row gap-9 items-center px-5 py-7 bg-black text-white ">
-                  <div className="flex flex-col gap-5">
-                    <div className="flex gap-4 items-center">
-                      <img className="" src={iphone} alt="" />
-                      <p className="poppins">iPhone 14 Series</p>
-                    </div>
-                    <h3 className="inter font-semibold text-[48px] leading-[60px] tracking-[4%] inter ">
-                      Up to 10% off Voucher
-                    </h3>
-                    <div className="flex gap-2 items-center">
-                      <p className="underline poppins font-normal ">Shop Now</p>
-                      <img src={arrowRightW} alt="" />
-                    </div>
-                  </div>
-                  <img src={Iphone1} alt="" />
-                </div>
-              </div>
+
+            <SwiperSlide className="w-full">
+              <img
+                className="w-full object-cover lg:h-[344px] h-auto"
+                src={imgMain3}
+                alt=""
+              />
             </SwiperSlide>
-            <SwiperSlide>
-              <div className="lg:h-[444px] flex items-center justify-center   ">
-                <div className="flex flex-col lg:flex-row gap-9 items-center px-5 py-7 bg-black text-white ">
-                  <div className="flex flex-col gap-5">
-                    <div className="flex gap-4 items-center">
-                      <img className="" src={iphone} alt="" />
-                      <p className="poppins">iPhone 14 Series</p>
-                    </div>
-                    <h3 className="inter font-semibold text-[48px] leading-[60px] tracking-[4%] inter ">
-                      Up to 10% off Voucher
-                    </h3>
-                    <div className="flex gap-2 items-center">
-                      <p className="underline poppins font-normal ">Shop Now</p>
-                      <img src={arrowRightW} alt="" />
-                    </div>
-                  </div>
-                  <img src={Iphone1} alt="" />
-                </div>
-              </div>
+
+            <SwiperSlide className="w-full">
+              <img
+                className="w-full object-cover lg:h-[344px]"
+                src={imgMain4}
+                alt=""
+              />
             </SwiperSlide>
           </Swiper>
         </div>
       </section>
-     
+
       <section className="flex flex-col lg:flex-row items-start lg:justify-between lg:items-end px-5 ">
         <div className="flex flex-col lg:flex-row items-start lg:items-end gap-3 lg:gap-[87px]  ">
           <div className="flex flex-col gap-6">
@@ -193,7 +155,7 @@ export default function Home() {
             </h1>
           </div>
         </div>
-        <Link to={'/all-products'}>
+        <Link to={"/all-products"}>
           <button className="px-12 py-4 bg-[#DB4444] text-[#FAFAFA] rounded-[4px] font-normal poppins  ">
             View All
           </button>

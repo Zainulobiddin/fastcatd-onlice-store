@@ -1,60 +1,140 @@
 import star1 from "#/star1.svg";
-// import star2 from "#/star2.svg";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-// import star3 from "#/star3.svg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useProducts } from "@/store/products/products";
+import toast from "react-hot-toast";
+import {
+  Navigation,
+  Pagination,
+  Scrollbar,
+  A11y,
+  Autoplay,
+} from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+
 export default function Products() {
-  const {products, getProducts} = useProducts()
+  const { products, getProducts, setAddToCart, setCountWishlistProducts } =
+    useProducts();
+  const navigate = useNavigate();
+  // const [like, setLike] = useState(false)
+
+  let wishlistProduct = localStorage.getItem("wishlistProduct");
 
   useEffect(() => {
-    getProducts()
-  }, [])
+    getProducts();
+  }, []);
+
+  if (wishlistProduct) {
+    wishlistProduct = JSON.parse(localStorage.getItem("wishlistProduct"));
+  } else {
+    localStorage.setItem("wishlistProduct", []);
+    wishlistProduct = [];
+  }
+
+  function handleAddToCart(id) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You didn't log in ");
+      navigate("log-in");
+    }
+    setAddToCart(id);
+  }
+
+  function handleLike(product) {
+
+    let newProductToWishlist = {
+      id: product.id,
+      image: product.image,
+      price: product.price,
+      productName: product.productName,
+    };
+
+    const find = wishlistProduct.find((wish) => wish.id === product.id);
+    if (!find) {
+      wishlistProduct.push(newProductToWishlist);
+      localStorage.setItem("wishlistProduct", JSON.stringify(wishlistProduct));
+    } else {
+      const filtered = wishlistProduct.filter((wish) => wish.id !== product.id);
+      localStorage.setItem("wishlistProduct", JSON.stringify(filtered));
+    }
+    setCountWishlistProducts(product.id);
+  }
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row items-center justify-between py-8 gap-3  ">
+      <Swiper
+        modules={[Navigation, Pagination, Scrollbar, A11y, Autoplay]}
+        spaceBetween={50}
+        slidesPerView={3}
+        pagination={{ clickable: true }}
+        autoplay={{
+          delay: 2500,
+          disableOnInteraction: false,
+        }}
+        breakpoints={{
+          0: { slidesPerView: 1, spaceBetween: 10 },
+          640: { slidesPerView: 1, spaceBetween: 15 },
+          768: { slidesPerView: 2, spaceBetween: 20 },
+          1024: { slidesPerView: 3, spaceBetween: 30 },
+        }}
+      >
         {products?.products?.map((product) => (
-          <div className="flex flex-col gap-2">
-            <div
-              key={product.id}
-              className="group w-[270px] h-[250px] bg-[#F5F5F5] rounded-[8px] relative overflow-hidden"
-            >
-              <div className="flex justify-between px-3 py-3">
-                <p className="px-3 bg-[#DB4444] h-[26px] text-[#FAFAFA] rounded-[4px] ">
-                  -{product.discountPrice}%
-                </p>
-                <div className="flex flex-col gap-2">
-                  <FavoriteBorderIcon />
-                  <RemoveRedEyeIcon />
+          <SwiperSlide
+            className="flex justify-center items-center py-8"
+            key={product.id}
+          >
+            <div className="flex flex-col items-center gap-2 duration-300">
+              <div className="group w-[90%] h-[250px] bg-[#F5F5F5] rounded-[8px] relative overflow-hidden">
+                <div className="flex justify-between px-3 py-3">
+                  <p className="px-3 bg-[#DB4444] h-[26px] text-[#FAFAFA] rounded-[4px] ">
+                    -{product.discountPrice}%
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    <FavoriteBorderIcon
+                      className="cursor-pointer "
+                      onClick={() => handleLike(product)}
+                    />
+                    <Link to={`products/${product.id}`}>
+                      <RemoveRedEyeIcon />
+                    </Link>
+                  </div>
                 </div>
+
+                <img
+                  className="m-auto w-[170px] h-[140px] mt-[-30px]"
+                  src={`http://37.27.29.18:8002/images/${product.image}`}
+                  alt=""
+                />
+
+                <button
+                  onClick={() => handleAddToCart(product.id)}
+                  className="absolute bottom-0 left-0 w-full mt-4 bg-black text-white py-2 font-normal poppins opacity-0 group-hover:opacity-100 transition duration-300"
+                >
+                  Add To Cart
+                </button>
               </div>
 
-              <img
-                className="m-auto w-[170px] h-[140px] mt-[-30px]"
-                src={`http://37.27.29.18:8002/images/${product.image}`}
-                alt=""
-              />
-
-              <button className="absolute bottom-0 left-0 w-full mt-4 bg-black text-white py-2 font-normal poppins opacity-0 group-hover:opacity-100 transition duration-300">
-                Add To Cart
-              </button>
+              <h4>
+                <b>{product.productName}</b>
+              </h4>
+              <div className="flex gap-3 items-center font-normal poppins">
+                <p className="text-[#DB4444]  ">${product.price}</p>
+                <p className="text-[#727171]">{product.hasDiscount}</p>
+              </div>
+              <div className="flex gap-2">
+                <img src={star1} alt="" />
+                <p className="text-[#727171]">({product.quantity})</p>
+              </div>
             </div>
-
-            <h4><b>{product.productName}</b></h4>
-            <div className="flex gap-3 items-center font-normal poppins">
-              <p className="text-[#DB4444]  ">${product.price}</p>
-              <p className="text-[#727171]">{product.hasDiscount}</p>
-            </div>
-            <div className="flex gap-2">
-              <img src={star1} alt="" />
-              <p className="text-[#727171]">({product.quantity})</p>
-            </div>
-          </div>
+          </SwiperSlide>
         ))}
-      </div>
+      </Swiper>
 
       <div className="flex justify-start lg:justify-center px-4">
         <Link to={"/all-products"}>

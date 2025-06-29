@@ -1,82 +1,108 @@
 import star2 from "#/star2.svg";
 import car from "#/car.svg";
-import info from "#/info.svg";
-import info1 from "#/info1.svg";
 import reload from "#/reload.svg";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import CardRed from "../card-red/card-red";
+import Products from "../products/products";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useInfo } from "@/store/info/info";
+import { API } from "@/utils/config";
 export default function Info() {
+  const { getProductByID, infoProduct } = useInfo();
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      getProductByID(id);
+    }
+  }, [id]);
+
   return (
     <div>
-        <p className="my-6 px-4">
-          Account / Gaming / <span>Havic HV G-92 Gamepad</span>
-        </p>
+      <p className="my-6 px-4">
+        Account / Gaming / <span>Havic HV G-92 Gamepad</span>
+      </p>
+      <div className="flex flex-col  lg:flex-row gap-5 my-10 mb-16">
+        <div className="flex flex-col-reverse lg:flex-row gap-8">
+          <div className="flex lg:flex-col items-center gap-4 lg:justify-between justify-center ">
+            {infoProduct?.images?.map((image) => (
+              <img
+                src={`${API}/images/${image.images}`}
+                alt=""
+                className="lg:px-6 lg:py-3 px-2.5 py-1.5 bg-[#F5F5F5] rounded-[4px] w-[80px] lg:w-[261px] "
+              />
+            ))}
+          </div>
 
-      <div className="flex flex-col  lg:flex-row gap-5 my-10">
-    
-        <div className="flex lg:flex-col items-center gap-4 lg:justify-between justify-center ">
-          <img
-            className="lg:px-6 lg:py-3 px-2.5 py-1.5 bg-[#F5F5F5] rounded-[4px] w-[80px] lg:w-[261px] "
-            src={info1}
-            alt=""
-          />
-          <img
-            className="lg:px-6 lg:py-3 px-2.5 py-1.5 bg-[#F5F5F5] rounded-[4px] w-[80px] lg:w-[261px] "
-            src={info1}
-            alt=""
-          />
-          <img
-            className="lg:px-6 lg:py-3 px-2.5 py-1.5 bg-[#F5F5F5] rounded-[4px] w-[80px] lg:w-[261px] "
-            src={info1}
-            alt=""
-          />
-          <img
-            className="lg:px-6 lg:py-3 px-2.5 py-1.5 bg-[#F5F5F5] rounded-[4px] w-[80px] lg:w-[261px] "
-            src={info1}
-            alt=""
-          />
+          <div className="lg:h-full px-7 bg-[#F5F5F5] lg:w-[500px] rounded-[4px] flex items-center justify-center w-[90%] m-auto">
+            {infoProduct.images?.length > 0 ? (
+              <img
+                className="w-full"
+                src={`${API}/images/${infoProduct.images[0].images}`}
+                alt={infoProduct.productName}
+              />
+            ) : (
+              <div>Picture not found</div>
+            )}
+          </div>
         </div>
 
-        <img className="px-7 bg-[#F5F5F5] rounded-[4px] w-[90%] m-auto lg:w-full lg:h-full " src={info} alt="" />
-
-        <div className="flex flex-col gap-5 lg:ml-[40px] px-4 ">
-          <p>Havic HV G-92 Gamepad </p>
-          <div className="flex gap-3" >
+        <div className="flex flex-col lg:w-[500px] gap-5 lg:ml-[40px] px-5 ">
+          <p>{infoProduct.productName}</p>
+          <div className="flex gap-3">
             <img src={star2} alt="" />
-            <p>(150 Reviews)</p>
-            <p>|</p>
-            <p>In Stock</p>
+            <p className="text-[#a09f9f]">(150 Reviews)</p>
+            <p className="text-[#a09f9f]">|</p>
+            <p className="text-green-400 font-semibold">In Stock</p>
           </div>
-          <h3>$192.00</h3>
-          <p className="text-[14px]  ">
-            PlayStation 5 Controller Skin High quality vinyl with air channel
-            adhesive for easy bubble free install & mess free removal Pressure
-            sensitive.
+          <h3 className="text-[24px] tracking-[3%] ">
+            <b>${infoProduct.price}</b>
+          </h3>
+          <p className="text-[14px] text-[#646464] ">
+            {infoProduct.description}
           </p>
-          <hr />
+          <hr className="text-[#a09f9f]" />
           <div>
-            <p>Colors: </p>
+            <p className="text-[20px]  ">Colors: </p>
           </div>
           <div className="flex gap-5 items-center">
-            <p>Size: </p>
+            <p className="text-[20px]  ">Size: </p>
             <div className="flex gap-3">
-              <p className="px-[11px] py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">XS</p>
-              <p className="px-[11px] py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">S</p>
-              <p className="px-[11px] py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">M</p>
-              <p className="px-[11px] py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">L</p>
-              <p className="px-[11px] py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">Xl</p>
+              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
+                XS
+              </p>
+              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
+                S
+              </p>
+              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
+                M
+              </p>
+              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
+                L
+              </p>
+              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
+                Xl
+              </p>
             </div>
           </div>
 
           <div className="flex justify-between  ">
             <div className="flex border-[1px] border-[#00000080] rounded-[4px] items-center">
-              <button className="px-2.5 py-2 bg-[#DB4444] font-semibold">-</button>
+              <button className="px-2.5 py-2 bg-[#DB4444] font-semibold cursor-pointer">
+                -
+              </button>
               <p className="w-[80px] text-center ">2</p>
-              <button className="px-2.5 py-2 bg-[#DB4444] text-white font-semibold ">+</button>
+              <button className="px-2.5 py-2 bg-[#DB4444] text-white font-semibold cursor-pointer">
+                +
+              </button>
             </div>
 
-            <button className="bg-[#DB4444] poppins py-2.5 px-7 lg:px-12 rounded-[4px] text-white  ">Buy Now</button>
+            <button className="bg-[#DB4444] poppins py-2.5 px-7 lg:px-12 rounded-[4px] text-white cursor-pointer ">
+              Buy Now
+            </button>
 
-            <button className="border-[1px] rounded-[4px] border-[#00000080] px-2.5 ">
+            <button className="border-[1px] rounded-[4px] border-[#00000080] px-2.5 cursor-pointer">
               <FavoriteBorderIcon />
             </button>
           </div>
@@ -99,9 +125,14 @@ export default function Info() {
             </div>
           </div>
         </div>
-
-
       </div>
+
+      <section className="flex flex-col gap-8 my-[100px]  ">
+        <CardRed title={"Related Item"} />
+        <div  className="w-full max-w-[1300px] mx-auto">
+          <Products />
+        </div>
+      </section>
     </div>
   );
 }

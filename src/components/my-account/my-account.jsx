@@ -5,8 +5,11 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { Card, CardContent, CardActions, Button } from "@mui/material";
+import { getToken } from "@/utils/other";
 
 export default function MyAccount() {
+  getToken()
+  console.log(getToken())
   return (
     <div>
       <p className="my-6 px-4 text-gray-400">
@@ -79,8 +82,8 @@ export default function MyAccount() {
                 noValidate
                 autoComplete="off"
               >
-                <TextField className="w-full" label="First name" />
-                <TextField className="w-full" label="Last name" />
+                <TextField className="w-full" label="First name" value={getToken().name} />
+                <TextField className="w-full" label="Phone Number" value={getToken().exp}  />
               </Box>
               <Box
                 className="flex justify-between w-full flex-col lg:flex-row "
@@ -89,8 +92,8 @@ export default function MyAccount() {
                 noValidate
                 autoComplete="off"
               >
-                <TextField className="w-full" label="Email address" />
-                <TextField className="w-full" label="Street address" />
+                <TextField className="w-full" label="Email address" value={getToken().email} />
+                <TextField className="w-full" label="Street address" value={'Dushanbe'} />
               </Box>
             </Box>
 
@@ -102,7 +105,7 @@ export default function MyAccount() {
               autoComplete="off"
             >
               <CardContent className="poppins  ">{"Password Changes"}</CardContent>
-              <TextField className="w-full" label="Current passwod" />
+              <TextField className="w-full" label="Current passwod" value={getToken().confirmPassword} />
               <Box
                 component="form"
                 sx={{ "& > :not(style)": {} }}
@@ -110,8 +113,8 @@ export default function MyAccount() {
                 autoComplete="off"
                 className="flex justify-between w-full flex-col lg:flex-row gap-2 "
               >
-                <TextField className="w-full" label="New passwod" />
-                <TextField className="w-full" label="Confirm new passwod" />
+                <TextField className="w-full" label="New passwod" value={getToken().password} />
+                <TextField className="w-full" label="Confirm new passwod"  />
               </Box>
             </Box>
 

@@ -17,7 +17,6 @@ import "swiper/css/scrollbar";
 
 export default function Categories() {
   const { categories, getCategories } = useGetCategories();
-
   useEffect(() => {
     getCategories();
   }, []);

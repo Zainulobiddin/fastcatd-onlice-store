@@ -14,7 +14,9 @@ export default function Layout() {
         </Container>
       </header>
       <Container>
+        <div className="pt-32">
         <Outlet />
+        </div>
       </Container>
 
       <footer className="bg-black">

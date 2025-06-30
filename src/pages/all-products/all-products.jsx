@@ -20,9 +20,24 @@ import { InputAdornment, Slider, TextField } from "@mui/material";
 import { useProducts } from "@/store/products/products";
 import { useEffect, useState } from "react";
 import { useGetCategories } from "@/store/category/category";
+import toast from "react-hot-toast";
+import { Link, Navigate } from "react-router-dom";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+
+
 
 export default function AllProducts() {
-  const { products, getProducts, priceRange, categotyByID, brands, getBrand, getBrandByID } = useProducts();
+  const {
+    products,
+    getProducts,
+    priceRange,
+    categotyByID,
+    brands,
+    getBrand,
+    getBrandByID,
+    setCountWishlistProducts,
+    setAddToCart,
+  } = useProducts();
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
   const { categories, getCategories } = useGetCategories();
@@ -35,11 +50,10 @@ export default function AllProducts() {
     setMaxPrice(newValue);
   };
 
-
   useEffect(() => {
     getProducts();
     getCategories();
-    getBrand()
+    getBrand();
   }, []);
 
   function handleApply() {
@@ -47,20 +61,56 @@ export default function AllProducts() {
   }
 
   function handleCategory(id) {
-    categotyByID(id)
+    categotyByID(id);
   }
-
 
   // function handleBrandById
   function handleBrandById(id) {
-    getBrandByID(id)
+    getBrandByID(id);
   }
 
   function handleAllBrand() {
-    getProducts()
+    getProducts();
   }
 
+  let wishlistProduct = localStorage.getItem("wishlistProduct");
+  if (wishlistProduct) {
+    wishlistProduct = JSON.parse(localStorage.getItem("wishlistProduct"));
+  } else {
+    localStorage.setItem("wishlistProduct", []);
+    wishlistProduct = [];
+  }
 
+  function handleAddToCart(id) {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You didn't log in ");
+      Navigate("log-in");
+    } else {
+      setAddToCart(id);
+    }
+  }
+
+  function handleLike(product) {
+    let newProductToWishlist = {
+      id: product.id,
+      image: product.image,
+      price: product.price,
+      productName: product.productName,
+    };
+
+    const find = wishlistProduct.find((wish) => wish.id === product.id);
+    if (!find) {
+      wishlistProduct.push(newProductToWishlist);
+      localStorage.setItem("wishlistProduct", JSON.stringify(wishlistProduct));
+      getProducts();
+    } else {
+      const filtered = wishlistProduct.filter((wish) => wish.id !== product.id);
+      localStorage.setItem("wishlistProduct", JSON.stringify(filtered));
+      getProducts();
+    }
+    setCountWishlistProducts(product.id);
+  }
 
   return (
     <div className="py-10">
@@ -70,7 +120,7 @@ export default function AllProducts() {
         </p>
 
         <Box className="flex flex-col gap-2 lg:flex-row w-full justify-between">
-          <Box sx={{ minWidth: "100%" }}>
+          <Box>
             <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Populary</InputLabel>
               <Select
@@ -104,7 +154,6 @@ export default function AllProducts() {
               </Select>
             </FormControl>
           </Box>
-
         </Box>
       </div>
 
@@ -140,23 +189,27 @@ export default function AllProducts() {
               aria-controls="panel1-content"
               id="panel1-header"
             >
-              <Typography component="span"><b>Category</b></Typography>
+              <Typography component="span">
+                <b>Category</b>
+              </Typography>
             </AccordionSummary>
 
-            <AccordionDetails  className="text-[#DB4444] cursor-pointer">
+            <AccordionDetails className="text-[#DB4444] cursor-pointer">
               All products
             </AccordionDetails>
 
-             {categories.map((category) => (
-            <AccordionDetails>
-            <ul key={category.id}>
-              <li onClick={() => handleCategory(category.id)} className="bg-[#F5F5F5] cursor-pointer hover:text-[#DB4444] px-3 py-3 rounded-[4px] lg:bg-white lg:px-0 lg:py-0">
-                {category.categoryName}
-              </li>
-            </ul>
-            </AccordionDetails>
-          ))}
-
+            {categories.map((category) => (
+              <AccordionDetails>
+                <ul key={category.id}>
+                  <li
+                    onClick={() => handleCategory(category.id)}
+                    className="bg-[#F5F5F5] cursor-pointer hover:text-[#DB4444] px-3 py-3 rounded-[4px] lg:bg-white lg:px-0 lg:py-0"
+                  >
+                    {category.categoryName}
+                  </li>
+                </ul>
+              </AccordionDetails>
+            ))}
           </Accordion>
 
           <Accordion>
@@ -165,18 +218,22 @@ export default function AllProducts() {
               aria-controls="panel1-content"
               id="panel1-header"
             >
-              <Typography component="span"><b>Brands</b></Typography>
+              <Typography component="span">
+                <b>Brands</b>
+              </Typography>
             </AccordionSummary>
 
             {brands.map((brand) => (
-            <AccordionDetails className="text-[#505050] flex gap-3">
-              <input type="checkbox" onChange={() => handleBrandById(brand.id) }/>
-              {brand.brandName}
-            </AccordionDetails>
-
+              <AccordionDetails className="text-[#505050] flex gap-3">
+                <input
+                  type="checkbox"
+                  onChange={() => handleBrandById(brand.id)}
+                />
+                {brand.brandName}
+              </AccordionDetails>
             ))}
             <AccordionDetails className="text-[rgb(219,68,68)] flex gap-3">
-              <input type="checkbox" onChange={handleAllBrand}/>
+              <input type="checkbox" onChange={handleAllBrand} />
               See all
             </AccordionDetails>
           </Accordion>
@@ -334,50 +391,68 @@ export default function AllProducts() {
           </Accordion>
         </aside>
 
-
         <div className=" lg:w-[75%] ml-20 flex flex-wrap lg:flex-row  items-center lg:justify-between py-8 gap-3.5 w-[90%] m-auto justify-center  ">
-          {products?.products?.map((product) => (
-            <div className="flex flex-col gap-2">
-              <div
-                key={product.id}
-                className="group w-[270px] h-[250px] bg-[#F5F5F5] rounded-[4px] relative overflow-hidden"
-              >
-                <div className="flex justify-between px-3 py-3">
-                  <p className="px-3 bg-[#DB4444] h-[26px] text-[#FAFAFA] rounded-[4px] ">
-                    -{product.discountPrice}%
-                  </p>
-                  <div className="flex flex-col gap-2">
-                    <FavoriteBorderIcon />
-                    <RemoveRedEyeIcon />
+          {products?.products?.map((product) => {
+            let isLiked = wishlistProduct.find(
+              (wish) => wish.id === product.id
+            );
+            return (
+              <div className="flex flex-col gap-2 pb-5 ">
+                <div
+                  key={product.id}
+                  className="group w-[270px] h-[250px] bg-[#F5F5F5] rounded-[4px] relative overflow-hidden"
+                >
+                  <div className="flex justify-between px-3 py-3">
+                    <p className="px-3 bg-[#DB4444] h-[26px] text-[#FAFAFA] rounded-[4px] ">
+                      -{product.discountPrice}%
+                    </p>
+                    <div className="flex flex-col gap-2">
+                      {isLiked ? (
+                        <FavoriteIcon
+                          className="cursor-pointer text-red-500"
+                          onClick={() => handleLike(product)}
+                        />
+                      ) : (
+                        <FavoriteBorderIcon
+                          className="cursor-pointer text-black "
+                          onClick={() => handleLike(product)}
+                        />
+                      )}
+                      <Link to={`/products/${product.id}`}>
+                      <RemoveRedEyeIcon />
+                      </Link>
+                    </div>
                   </div>
+
+                  <img
+                    className="m-auto w-[170px] h-[140px] mt-[-30px]"
+                    src={`http://37.27.29.18:8002/images/${product.image}`}
+                    alt=""
+                  />
+
+                  <button
+                    onClick={() => handleAddToCart(product.id)}
+                    className="absolute bottom-0 left-0 w-full mt-4 bg-black text-white py-2 font-normal poppins opacity-0 group-hover:opacity-100 transition duration-300"
+                  >
+                    Add To Cart
+                  </button>
                 </div>
 
-                <img
-                  className="m-auto w-[170px] h-[140px] mt-[-30px]"
-                  src={`http://37.27.29.18:8002/images/${product.image}`}
-                  alt=""
-                />
-
-                <button className="absolute bottom-0 left-0 w-full mt-4 bg-black text-white py-2 font-normal poppins opacity-0 group-hover:opacity-100 transition duration-300">
-                  Add To Cart
-                </button>
+                <h4>
+                  <b>{product.productName}</b>
+                </h4>
+                <div className="flex gap-3 items-center font-normal poppins">
+                  <p className="text-[#DB4444]  ">${product.price}</p>
+                  <p className="text-[#727171]">{product.pray2}</p>
+                </div>
+                <div className="flex gap-2">
+                  <img src={star1} alt="" />
+                  <p className="text-[#727171]">({product.quantity})</p>
+                </div>
               </div>
-
-              <h4>
-                <b>{product.productName}</b>
-              </h4>
-              <div className="flex gap-3 items-center font-normal poppins">
-                <p className="text-[#DB4444]  ">${product.price}</p>
-                <p className="text-[#727171]">{product.pray2}</p>
-              </div>
-              <div className="flex gap-2">
-                <img src={star1} alt="" />
-                <p className="text-[#727171]">({product.quantity})</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-
       </div>
     </div>
   );

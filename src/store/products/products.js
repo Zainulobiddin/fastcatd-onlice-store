@@ -25,16 +25,7 @@ export const useProducts = create((set, get) => ({
     }
   },
 
-  setAddToCart: async (id) => {
-    try {
-      await axiosReguest.post(`/Cart/add-product-to-cart?id=${id}`);
-      set((state) => ({ countProducts: state.countProducts + 1 }));
-      await get().getProducts();
-    } catch (error) {
-      console.error(error);
-    }
-  },
-
+ 
   priceRange: async (minPrice, maxPrice) => {
     try {
      const {data} = await axiosReguest.get(`/Product/get-products/?MinPrice=${minPrice}&MaxPrice=${maxPrice}`)
@@ -67,7 +58,6 @@ export const useProducts = create((set, get) => ({
     try {
         const {data} = await axiosReguest.get(`/Product/get-products?BrandId=${id}`)      
         set(() => ({products: data?.data}))
-        console.log('data = ', data?.data)
     } catch (error) {
       console.error(error);
     }
@@ -77,8 +67,7 @@ export const useProducts = create((set, get) => ({
   searchProductName: async (productName) => {
       try {
           const {data} = await axiosReguest.get(`/Product/get-products?ProductName=${productName}`)        
-          set(() => ({products: data}))
-          console.log(data)
+          set(() => ({products: data?.data}))
       } catch (error) {
         console.error(error);
       }

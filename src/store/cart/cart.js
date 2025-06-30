@@ -1,6 +1,7 @@
 import { axiosReguest } from "@/utils/axios";
 import { API } from "@/utils/config";
 import axios from "axios";
+import toast from "react-hot-toast";
 import { create } from "zustand";
 
 export const useCart = create((set, get) => ({
@@ -20,11 +21,23 @@ export const useCart = create((set, get) => ({
     }
   },
 
+   setAddToCart: async (id) => {
+      try {
+       const {data} =  await axiosReguest.post(`/Cart/add-product-to-cart?id=${id}`);
+        set((state) => ({ countProducts: state.countProducts + 1 }));
+        await get().getCart();
+        toast.success(`${data.data}`)
+      } catch (error) {
+        toast.error(`${error.response.data.errors[0]}`)
+        console.error(error);
+      }
+    },
+  
+
   deleteProductFromCart: async (id) => {
     try {
       await axiosReguest.delete(
-        `${API}/Cart/delete-product-from-cart?id=${id}`,
-        {}
+        `/Cart/delete-product-from-cart?id=${id}`,
       );
       get().getCart();
     } catch (error) {

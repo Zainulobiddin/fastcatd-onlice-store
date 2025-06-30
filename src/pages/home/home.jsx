@@ -67,10 +67,12 @@ export default function Home() {
       <section className="flex flex-col  lg:flex-row gap-10 items-center  py-5 ">
         <section className="lg:w-[18%] flex flex-wrap lg:flex-col  gap-4 lg:border-r-[1px] px-4 lg:border-[#0000001A] pr-5 ">
           {categories.map((categoryName) => (
-            <ul className="" key={categoryName.id}>
-              <li className="bg-[#F5F5F5] cursor-pointer hover:text-[#DB4444] px-3 py-3 rounded-[4px] lg:bg-white lg:px-0 lg:py-0">
-                {categoryName.categoryName}
-              </li>
+            <ul key={categoryName.id}>
+              <Link to={`/category-by-id/${categoryName.id}`}>
+                <li className="bg-[#F5F5F5] cursor-pointer hover:text-[#DB4444] hover:translate-x-1 transition-all duration-300 px-3 py-3 rounded-[4px] lg:bg-white lg:px-0 lg:py-0">
+                  {categoryName.categoryName}
+                </li>
+              </Link>
             </ul>
           ))}
         </section>
@@ -113,11 +115,12 @@ export default function Home() {
         <div className="flex flex-col lg:flex-row items-start lg:items-end gap-3 lg:gap-[87px]  ">
           <div className="flex flex-col gap-6">
             <CardRed title={"Today’s"} />
-            <h1 className="font-semibold text-[36px] leading-[48px] tracking-[4%] ">
+            <h1 className="font-semibold text-[36px] leading-[48px] tracking-[4%] transition duration-300 hover:text-[#DB4444]">
               Flash Sales
             </h1>
           </div>
-          <Time />
+          <Time targetDate='2025-07-31T23:59:59'
+ />
         </div>
         <Arrow />
       </section>
@@ -156,9 +159,10 @@ export default function Home() {
           </div>
         </div>
         <Link to={"/all-products"}>
-          <button className="px-12 py-4 bg-[#DB4444] text-[#FAFAFA] rounded-[4px] font-normal poppins  ">
-            View All
-          </button>
+         <button className="px-12 py-4 bg-[#DB4444] text-white rounded-md font-medium poppins shadow-md hover:bg-[#c13636] hover:shadow-lg transition-all duration-300">
+  View All
+</button>
+
         </Link>
       </section>
 

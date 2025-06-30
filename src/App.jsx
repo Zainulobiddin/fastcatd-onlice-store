@@ -11,6 +11,7 @@ import Info from "./components/info/info"
 import Card from "./components/card/card"
 import Checkout from "./components/checkout/checkout"
 import MyAccount from "./components/my-account/my-account"
+import CategoryByID from "./components/categoty-by-id/categoryByID"
 
 export default function App() {
   const router = createBrowserRouter([
@@ -61,6 +62,10 @@ export default function App() {
         {
           path: '/my-account',
           element: <MyAccount/>
+        },
+        {
+          path: '/category-by-id/:id',
+          element: <CategoryByID/>
         },
       ]
     }

@@ -9,7 +9,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { IconButton, InputAdornment, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PermIdentityIcon from "@mui/icons-material/PermIdentity";
 import FilterFramesIcon from "@mui/icons-material/FilterFrames";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -18,14 +18,19 @@ import { removeToken } from "@/utils/other";
 import toast from "react-hot-toast";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
+import { useCart } from "@/store/cart/cart";
 
 export default function Header() {
   const [profilModal, setProfilModal] = useState(false);
-  const { countProducts } = useProducts();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('')
-  const {searchProductName} = useProducts()
+  const [search, setSearch] = useState("");
+  const { searchProductName } = useProducts();
+  const {cartProducts, getCart} = useCart()
+
+  console.log('cartProducts = ',  cartProducts[0]?.productsInCart?.length)
+
+
 
   // localStorage
   let wishlistProduct = localStorage.getItem("wishlistProduct");
@@ -60,17 +65,19 @@ export default function Header() {
   }
 
   function handleSearch(e) {
-    setSearch(e.target.value)
-    searchProductName(search)
+    setSearch(e);
+    searchProductName(e);
   }
 
-
+  useEffect(() => {
+    getCart()
+  }, [])
 
 
 
   return (
     <>
-      <div className=" px-4 py-5  ">
+      <div className=" px-4 py-5 fixed top-0 left-0  w-full shadow-md flex md:justify-around items-center  z-10 bg-white border-b-[0.5px] border-b-gray-300 ">
         <div className="lg:hidden justify-between items-center flex w-full ">
           <div className="flex gap-4">
             <MenuIcon onClick={handleClickOpen} />
@@ -98,20 +105,23 @@ export default function Header() {
 
           <div className="flex items-center gap-5">
             {localStorage.getItem("token") && (
-              <Box className='flex items-center gap-5'>
-                <Link to={"/wishlist"}>
-                  <FavoriteBorderIcon />
-                  {localStorage.getItem("wishlistProduct") ? (
-                    <p className="text-[12px] leading-[18px] text-[#FAFAFA] poppins absolute top-[15px] right-[113px] z-1 bg-red-500 p-0.5 rounded-[50%] px-[6px] ">
-                      {wishlistProduct.length}
-                    </p>
-                  ) : null}
-                </Link>
+              <Box className="flex items-center gap-5">
+                <Box className="relative">
+                  <Link to={"/wishlist"}>
+                    <FavoriteBorderIcon />
+                    {wishlistProduct.length > 0 && (
+                      <span className="absolute top-[-6px] right-[-6px] bg-red-500 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center">
+                        {wishlistProduct.length}
+                      </span>
+                    )}
+                  </Link>
+                </Box>
+
                 <Link to={"card"}>
                   <Box className="flex items-start relative">
                     <ShoppingCartIcon />
                     <p className="text-[12px] leading-[18px] text-[#FAFAFA] poppins absolute top-[-14px] right-[-6px] z-1 bg-red-500 p-0.5 rounded-[50%] px-[6px] ">
-                      {countProducts}
+                      {cartProducts[0]?.productsInCart?.length}
                     </p>
                   </Box>
                 </Link>
@@ -127,15 +137,15 @@ export default function Header() {
           </div>
         </div>
 
-        <div className="hidden lg:flex gap-[150px] items-center  ">
+        <div className="hidden lg:flex gap-[150px] items-center justify-between  ">
           <Link to={"/"}>
             <img src={logo} alt="" />
           </Link>
           <div className="poppins flex gap-6">
-            <NavLink to={"/"}>Home</NavLink>
-            <NavLink to={"/contact"}>Contact</NavLink>
-            <NavLink to={"/about"}>About</NavLink>
-            <NavLink to={"/sign-up"}>Sign Up</NavLink>
+            <NavLink className='hover:text-blue-600 hover:underline underline-offset-4 transition duration-200' to={"/"}>Home</NavLink>
+            <NavLink className='hover:text-blue-600 hover:underline underline-offset-4 transition duration-200' to={"/contact"}>Contact</NavLink>
+            <NavLink className='hover:text-blue-600 hover:underline underline-offset-4 transition duration-200' to={"/about"}>About</NavLink>
+            <NavLink className='hover:text-blue-600 hover:underline underline-offset-4 transition duration-200' to={"/sign-up"}>Sign Up</NavLink>
           </div>
 
           <div className="flex items-center gap-4 ">
@@ -151,7 +161,7 @@ export default function Header() {
                 variant="outlined"
                 className="border-none poppins "
                 value={search}
-                onChange={handleSearch}
+                onChange={({ target }) => handleSearch(target.value)}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
@@ -162,36 +172,39 @@ export default function Header() {
               />
             </Box>
 
-            {localStorage.getItem("token") && (
-              <Box className="flex gap-4 items-center">
-                <Link to={"/wishlist"}>
+            <Box className="flex gap-4 items-center">
+              <Link to={"/wishlist"}>
+                <Box>
                   <FavoriteBorderIcon />
-                  {localStorage.getItem("wishlistProduct") ? (
-                    <p className="text-[12px] leading-[18px] text-[#FAFAFA] poppins absolute top-[30px] right-[190px] z-1 bg-red-500 p-0.5 rounded-[50%] px-[6px] ">
-                      {wishlistProduct.length}
-                    </p>
-                  ) : null}
-                </Link>
+                  <p className="text-[12px] leading-[18px] text-[#FAFAFA] poppins absolute top-[30px] right-[185px] z-1 bg-red-500 p-0.5 rounded-[50%] px-[6px] ">
+                    {wishlistProduct.length}
+                  </p>
+                </Box>
+              </Link>
 
+              {localStorage.getItem("token") ? (
                 <Link to={"card"}>
-                  <Box className="flex items-start relative">
+                  <Box className="flex items-start relative ">
                     <ShoppingCartIcon />
-                    {localStorage.getItem("token") ? (
-                      <p className="text-[12px] leading-[18px] text-[#FAFAFA] poppins absolute top-[-15px] right-[-5px] z-1 bg-red-500 p-0.5 rounded-[50%] px-[6px] ">
-                        {countProducts}
-                      </p>
-                    ) : null}
+                    <p className="text-[12px] leading-[18px] text-[#FAFAFA] poppins absolute top-[-15px] right-[-5px] z-1 bg-red-500 p-0.5 rounded-[50%] px-[6px] ">
+                     {cartProducts.length > 0 ? cartProducts[0].productsInCart.length : 0}
+                    </p>
                   </Box>
                 </Link>
-              </Box>
+              ) : (
+                <div  className="px-4"></div>
+              )}
+            </Box>
+            {localStorage.getItem("token") ? (
+              <IconButton
+                color="black"
+                onClick={() => setProfilModal(!profilModal)}
+              >
+                <AccountCircleIcon />
+              </IconButton>
+            ) : (
+              <div className="px-4"></div>
             )}
-
-            <IconButton
-              color="black"
-              onClick={() => setProfilModal(!profilModal)}
-            >
-              <AccountCircleIcon />
-            </IconButton>
 
             {profilModal && (
               <div className="absolute  lg:right-[110px] lg:top-24 bg-black bg-opacity-80 flex flex-col gap-2.5 lg:py-4 lg:px-6 rounded-[4px] text-white z-50">
@@ -214,6 +227,8 @@ export default function Header() {
                   <p>Logout</p>
                 </div>
               </div>
+
+              
             )}
           </div>
         </div>

@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { API } from "@/utils/config";
 import arrowTop from "#/arrowTop.svg";
 import arrowBottom from "#/arrowBottom.svg";
+import { Link } from "react-router-dom";
 
 export default function Card() {
   const {
@@ -31,6 +32,7 @@ export default function Card() {
 
   function handleDeleteProductFromCart(id) {
     deleteProductFromCart(id);
+    getCart()
   }
 
   function handleIncrement(id) {
@@ -41,7 +43,9 @@ export default function Card() {
     decrement(id)
   }
 
-
+const subtotal = cartProducts[0]?.productsInCart?.reduce((acc, item) => {
+  return acc + item.product.price * item.quantity;
+}, 0);
 
   return (
     <div>
@@ -167,7 +171,7 @@ export default function Card() {
           <h3 className="poppins text-[20px] font-semibold ">Cart Total</h3>
           <div className="flex justify-between poppins text-[18px] ">
             <p>Subtotal:</p>
-            <p>$1750</p>
+            <p>$ {subtotal?.toFixed(2)}</p>
           </div>
           <div className="flex justify-between poppins text-[18px] ">
             <p>Shopping:</p>
@@ -176,11 +180,14 @@ export default function Card() {
           <hr className="text-[#000000]  " />
           <div className="flex justify-between text-[20px] font-semibold inter">
             <p>Total:</p>
-            <p>$1750</p>
+            <p>${subtotal?.toFixed(2)}</p>
           </div>
+          <Link to={'/checkout'}>
+
           <button className="bg-[#DB4444] px-12 py-4 text-white rounded-[4px] poppins text-[20px] font-semibold ">
             Procees to checkout
           </button>
+          </Link>
         </div>
       </div>
     </div>

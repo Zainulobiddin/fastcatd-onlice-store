@@ -8,15 +8,59 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useInfo } from "@/store/info/info";
 import { API } from "@/utils/config";
+import { useProducts } from "@/store/products/products";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+
 export default function Info() {
   const { getProductByID, infoProduct } = useInfo();
   const { id } = useParams();
+  const { setCountWishlistProducts, getProducts, setAddToCart } = useProducts();
 
   useEffect(() => {
+    getProducts();
     if (id) {
       getProductByID(id);
     }
   }, [id]);
+
+  let wishlistProduct = localStorage.getItem("wishlistProduct");
+  if (wishlistProduct) {
+    wishlistProduct = JSON.parse(localStorage.getItem("wishlistProduct"));
+  } else {
+    localStorage.setItem("wishlistProduct", []);
+    wishlistProduct = [];
+  }
+
+  let isLiked = wishlistProduct.find((wish) => wish.id === infoProduct.id);
+
+  function handleLike(infoProduct) {
+    let newProductToWishlist = {
+      id: infoProduct.id,
+      image: infoProduct.image,
+      price: infoProduct.price,
+      productName: infoProduct.productName,
+    };
+
+    const find = wishlistProduct.find((wish) => wish.id == infoProduct.id);
+    if (!find) {
+      wishlistProduct.push(newProductToWishlist);
+      localStorage.setItem("wishlistProduct", JSON.stringify(wishlistProduct));
+      getProducts();
+    } else {
+      const filtered = wishlistProduct.filter(
+        (wish) => wish.id !== infoProduct.id
+      );
+      localStorage.setItem("wishlistProduct", JSON.stringify(filtered));
+      getProducts();
+    }
+    setCountWishlistProducts(infoProduct.id);
+  }
+
+
+    function handleAddToCart(id) {
+      setAddToCart(id);
+  }
+
 
   return (
     <div>
@@ -98,13 +142,24 @@ export default function Info() {
               </button>
             </div>
 
-            <button className="bg-[#DB4444] poppins py-2.5 px-7 lg:px-12 rounded-[4px] text-white cursor-pointer ">
+            <button onClick={() => handleAddToCart(infoProduct.id)} className="bg-[#DB4444] poppins py-2.5 px-7 lg:px-12 rounded-[4px] text-white cursor-pointer ">
               Buy Now
             </button>
-
-            <button className="border-[1px] rounded-[4px] border-[#00000080] px-2.5 cursor-pointer">
-              <FavoriteBorderIcon />
-            </button>
+            {isLiked ? (
+              <button className="border-[1px] rounded-[4px] border-[#00000080] px-2.5 cursor-pointer">
+                <FavoriteIcon
+                  className="cursor-pointer text-red-500"
+                  onClick={() => handleLike(infoProduct)}
+                />
+              </button>
+            ) : (
+              <button className="border-[1px] rounded-[4px] border-[#00000080] px-2.5 cursor-pointer">
+                <FavoriteBorderIcon
+                  className="cursor-pointer text-black "
+                  onClick={() => handleLike(infoProduct)}
+                />
+              </button>
+            )}
           </div>
 
           <div className="border-[1px] border-[#00000080] rounded-[4px] flex flex-col gap-3 ">
@@ -129,7 +184,7 @@ export default function Info() {
 
       <section className="flex flex-col gap-8 my-[100px]  ">
         <CardRed title={"Related Item"} />
-        <div  className="w-full max-w-[1300px] mx-auto">
+        <div className="w-full max-w-[1300px] mx-auto">
           <Products />
         </div>
       </section>

@@ -1,9 +1,20 @@
 import CardRed from "@/components/card-red/card-red";
 import star1 from "#/star1.svg";
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Products from "@/components/products/products";
+import { useEffect } from "react";
+import { useProducts } from "@/store/products/products";
+import { IconButton } from "@mui/material";
 
 export default function Wishlist() {
+
+  const {getProducts} = useProducts()
+
+  useEffect(() => {
+  getProducts()
+  }, [])
+
+
   let wishlistProduct = localStorage.getItem("wishlistProduct");
   if (wishlistProduct) {
     wishlistProduct = JSON.parse(localStorage.getItem("wishlistProduct"));
@@ -12,16 +23,14 @@ export default function Wishlist() {
     wishlistProduct = [];
   }
 
-
   function handleDeleteProductFromWishlist(product) {
-    const find = wishlistProduct.find((wish) => wish.id === product.id)
+    const find = wishlistProduct.find((wish) => wish.id === product.id);
     if (find) {
-      const filtered = wishlistProduct.filter((wish) => wish.id !== product.id)
-     localStorage.setItem('wishlistProduct', JSON.stringify(filtered))
+      const filtered = wishlistProduct.filter((wish) => wish.id !== product.id);
+      localStorage.setItem("wishlistProduct", JSON.stringify(filtered));
     }
-    window.location.reload();
+    getProducts()
   }
-
 
   return (
     <div className="my-12">
@@ -34,15 +43,18 @@ export default function Wishlist() {
       <div className="flex  lg:flex-wrap items-center py-8 gap-3  ">
         {wishlistProduct?.map((wishlist) => (
           <div className="flex flex-col gap-2" key={wishlist.id}>
-
-
             <div className="group w-[270px] h-[250px] bg-[#F5F5F5] rounded-[8px] relative overflow-hidden">
               <div className="flex justify-between px-3 py-3">
                 <p className="px-3 bg-[#DB4444] h-[26px] text-[#FAFAFA] rounded-[4px] ">
                   -{wishlist.discountPrice}%
                 </p>
-                <div className="flex flex-col gap-2" onClick={() => handleDeleteProductFromWishlist(wishlist)} >
-                  <DeleteForeverIcon className="cursor-pointer"/>
+                <div
+                  className="flex flex-col gap-2"
+                  onClick={() => handleDeleteProductFromWishlist(wishlist)}
+                >
+                  <IconButton color='error'>
+                  <DeleteForeverIcon color='error'  className="cursor-pointer" />
+                  </IconButton>
                 </div>
               </div>
 
@@ -75,7 +87,6 @@ export default function Wishlist() {
         ))}
       </div>
 
-
       <div className="flex justify-between items-center px-4">
         <CardRed title={"Just For You"} />
         <button className="px-12 py-4 border-[1px] border-[#00000080] rounded-[4px] ">
@@ -83,7 +94,7 @@ export default function Wishlist() {
         </button>
       </div>
 
-      <Products/>
+      <Products />
     </div>
   );
 }

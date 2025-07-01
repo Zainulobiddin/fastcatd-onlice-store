@@ -27,6 +27,7 @@ export const useCart = create((set, get) => ({
         set((state) => ({ countProducts: state.countProducts + 1 }));
         await get().getCart();
         toast.success(`${data.data}`)
+        console.log(data?.data)
       } catch (error) {
         toast.error(`${error.response.data.errors[0]}`)
         console.error(error);

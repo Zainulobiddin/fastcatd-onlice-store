@@ -7,6 +7,7 @@ export function getToken() {
 }
 
 export function saveToken(token) {
+    
     localStorage.setItem('token', token)
 }
 

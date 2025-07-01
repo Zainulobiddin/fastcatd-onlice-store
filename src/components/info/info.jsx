@@ -10,11 +10,13 @@ import { useInfo } from "@/store/info/info";
 import { API } from "@/utils/config";
 import { useProducts } from "@/store/products/products";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useCart } from "@/store/cart/cart";
 
 export default function Info() {
   const { getProductByID, infoProduct } = useInfo();
   const { id } = useParams();
-  const { setCountWishlistProducts, getProducts, setAddToCart } = useProducts();
+  const { setCountWishlistProducts, getProducts } = useProducts();
+  const { setAddToCart } = useCart();
 
   useEffect(() => {
     getProducts();
@@ -56,11 +58,9 @@ export default function Info() {
     setCountWishlistProducts(infoProduct.id);
   }
 
-
-    function handleAddToCart(id) {
-      setAddToCart(id);
+  function handleAddToCart(id) {
+    setAddToCart(id);
   }
-
 
   return (
     <div>
@@ -142,7 +142,10 @@ export default function Info() {
               </button>
             </div>
 
-            <button onClick={() => handleAddToCart(infoProduct.id)} className="bg-[#DB4444] poppins py-2.5 px-7 lg:px-12 rounded-[4px] text-white cursor-pointer ">
+            <button
+              onClick={() => handleAddToCart(infoProduct.id)}
+              className="bg-[#DB4444] poppins py-2.5 px-7 lg:px-12 rounded-[4px] text-white cursor-pointer "
+            >
               Buy Now
             </button>
             {isLiked ? (

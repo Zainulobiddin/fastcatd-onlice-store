@@ -6,6 +6,7 @@ export const useAuth = create(() => ({
   postRegister: async (newUser) => {
     try {
       const response = await axiosStandart.post(`/Account/register`, newUser);
+      console.log("🔑 Token from server:", response); 
       localStorage.setItem(
         "user",
         JSON.stringify({
@@ -27,7 +28,7 @@ export const useAuth = create(() => ({
     try {
       const data = await axiosStandart.post("/Account/login", newUser);
       saveToken(data.data.data);
-      console.log(data.data.errors);
+      console.log("🛡️ New token saved:", data.data.data); 
       return data;
     } catch (error) {
       console.error(error.response.data.errors[0]);

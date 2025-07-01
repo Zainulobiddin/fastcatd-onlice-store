@@ -111,7 +111,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="flex flex-col lg:flex-row items-start lg:justify-between lg:items-end px-5 ">
+      <section className="flex flex-col lg:flex-row items-start lg:justify-between lg:items-end px-5 py-5 ">
         <div className="flex flex-col lg:flex-row items-start lg:items-end gap-3 lg:gap-[87px]  ">
           <div className="flex flex-col gap-6">
             <CardRed title={"Today’s"} />
@@ -122,7 +122,6 @@ export default function Home() {
           <Time targetDate='2025-07-31T23:59:59'
  />
         </div>
-        <Arrow />
       </section>
 
       <section>

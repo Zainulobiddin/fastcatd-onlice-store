@@ -79,6 +79,7 @@ export default function Products() {
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
+          pauseOnMouseEnter: true
         }}
         breakpoints={{
           0: { slidesPerView: 1, spaceBetween: 10 },
@@ -95,7 +96,7 @@ export default function Products() {
               key={product.id}
             >
               <div className="flex flex-col items-center gap-2 duration-300">
-                <div className="group w-[90%] h-[250px] bg-[#F5F5F5] rounded-[8px] relative overflow-hidden">
+                <div className="group w-[90%] h-[250px] bg-[#f9f9f9] hover:bg-[#f0f0f0] rounded-[12px] relative overflow-hidden transform transition duration-300 hover:-translate-y-2 hover:shadow-xl">
                   <div className="flex justify-between px-3 py-3">
                     <p className="px-3 bg-[#DB4444] h-[26px] text-[#FAFAFA] rounded-[4px] ">
                       -{product.discountPrice}%
@@ -119,7 +120,7 @@ export default function Products() {
                   </div>
 
                   <img
-                    className="m-auto w-[170px] h-[140px] mt-[-30px]"
+                    className="m-auto w-[170px] h-[140px] mt-[-30px] transition-transform duration-300 group-hover:scale-105"
                     src={`http://37.27.29.18:8002/images/${product.image}`}
                     alt=""
                   />

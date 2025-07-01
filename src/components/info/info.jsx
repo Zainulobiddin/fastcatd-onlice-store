@@ -64,8 +64,11 @@ export default function Info() {
 
   return (
     <div>
-      <p className="my-6 px-4">
-        Account / Gaming / <span>Havic HV G-92 Gamepad</span>
+      <p className="my-6 px-4 text-gray-600 text-sm sm:text-base">
+        Account / Gaming /{" "}
+        <span className="font-semibold text-gray-900">
+          Havic HV G-92 Gamepad
+        </span>
       </p>
       <div className="flex flex-col  lg:flex-row gap-5 my-10 mb-16">
         <div className="flex flex-col-reverse lg:flex-row gap-8">
@@ -73,7 +76,6 @@ export default function Info() {
             {infoProduct?.images?.map((image) => (
               <img
                 src={`${API}/images/${image.images}`}
-                alt=""
                 className="lg:px-6 lg:py-3 px-2.5 py-1.5 bg-[#F5F5F5] rounded-[4px] w-[80px] lg:w-[261px] "
               />
             ))}
@@ -84,7 +86,6 @@ export default function Info() {
               <img
                 className="w-full"
                 src={`${API}/images/${infoProduct.images[0].images}`}
-                alt={infoProduct.productName}
               />
             ) : (
               <div>Picture not found</div>
@@ -107,63 +108,63 @@ export default function Info() {
             {infoProduct.description}
           </p>
           <hr className="text-[#a09f9f]" />
-          <div>
-            <p className="text-[20px]  ">Colors: </p>
-          </div>
-          <div className="flex gap-5 items-center">
-            <p className="text-[20px]  ">Size: </p>
-            <div className="flex gap-3">
-              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
-                XS
-              </p>
-              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
-                S
-              </p>
-              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
-                M
-              </p>
-              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
-                L
-              </p>
-              <p className="px-[11px] cursor-pointer py-[6px] border-[1px] border-[#00000080] rounded-[4px] hover:bg-[#DB4444] hover:text-white ">
-                Xl
-              </p>
+          <div className="flex items-center gap-4">
+            <p className="text-lg font-semibold mb-2">Colors:</p>
+            <div className="flex gap-3 mt-[-10px]">
+              <span className="w-6 h-6 rounded-full bg-red-500 cursor-pointer hover:ring-2 hover:ring-red-500 transition" />
+              <span className="w-6 h-6 rounded-full bg-blue-500 cursor-pointer hover:ring-2 hover:ring-blue-500 transition" />
+              <span className="w-6 h-6 rounded-full bg-yellow-400 cursor-pointer hover:ring-2 hover:ring-yellow-400 transition" />
+              <span className="w-6 h-6 rounded-full bg-gray-700 cursor-pointer hover:ring-2 hover:ring-gray-700 transition" />
             </div>
           </div>
 
-          <div className="flex justify-between  ">
-            <div className="flex border-[1px] border-[#00000080] rounded-[4px] items-center">
-              <button className="px-2.5 py-2 bg-[#DB4444] font-semibold cursor-pointer">
-                -
-              </button>
-              <p className="w-[80px] text-center ">2</p>
-              <button className="px-2.5 py-2 bg-[#DB4444] text-white font-semibold cursor-pointer">
-                +
-              </button>
+          <div className="flex gap-6 items-center mt-4">
+            <p className="text-lg font-semibold min-w-[40px]">Size:</p>
+            <div className="flex gap-3 flex-wrap">
+              {["XS", "S", "M", "L", "XL"].map((size) => (
+                <p
+                  key={size}
+                  className="px-3 py-1.5 cursor-pointer border border-gray-400 rounded-md hover:bg-red-600 hover:text-white transition"
+                >
+                  {size}
+                </p>
+              ))}
             </div>
-
-            <button
-              onClick={() => handleAddToCart(infoProduct.id)}
-              className="bg-[#DB4444] poppins py-2.5 px-7 lg:px-12 rounded-[4px] text-white cursor-pointer "
-            >
-              Buy Now
-            </button>
-            {isLiked ? (
-              <button className="border-[1px] rounded-[4px] border-[#00000080] px-2.5 cursor-pointer">
-                <FavoriteIcon
-                  className="cursor-pointer text-red-500"
-                  onClick={() => handleLike(infoProduct)}
-                />
-              </button>
-            ) : (
-              <button className="border-[1px] rounded-[4px] border-[#00000080] px-2.5 cursor-pointer">
-                <FavoriteBorderIcon
-                  className="cursor-pointer text-black "
-                  onClick={() => handleLike(infoProduct)}
-                />
-              </button>
-            )}
           </div>
+
+        <div className="flex justify-between items-center mt-6">
+  <div className="flex border border-gray-400 rounded-md overflow-hidden">
+    <button className="px-3 py-2 bg-[#DB4444] text-white font-semibold cursor-pointer hover:bg-red-700 transition">-</button>
+    <p className="w-14 text-center flex items-center justify-center">2</p>
+    <button className="px-3 py-2 bg-[#DB4444] text-white font-semibold cursor-pointer hover:bg-red-700 transition">+</button>
+  </div>
+
+  <button
+    onClick={() => handleAddToCart(infoProduct.id)}
+    className="bg-[#DB4444] py-3 px-8 rounded-md text-white font-semibold shadow-md hover:bg-red-700 transition"
+  >
+    Buy Now
+  </button>
+
+  {isLiked ? (
+    <button
+      onClick={() => handleLike(infoProduct)}
+      className="border border-gray-400 rounded-md p-2 hover:bg-red-600 hover:text-white transition"
+      aria-label="Remove from wishlist"
+    >
+      <FavoriteIcon className="text-red-600" />
+    </button>
+  ) : (
+    <button
+      onClick={() => handleLike(infoProduct)}
+      className="border border-gray-400 rounded-md p-2 hover:bg-red-600 hover:text-white transition"
+      aria-label="Add to wishlist"
+    >
+      <FavoriteBorderIcon className="text-gray-600" />
+    </button>
+  )}
+</div>
+
 
           <div className="border-[1px] border-[#00000080] rounded-[4px] flex flex-col gap-3 ">
             <div className="flex gap-4 px-5 py-4">

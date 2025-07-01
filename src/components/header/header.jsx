@@ -26,11 +26,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { searchProductName } = useProducts();
-  const {cartProducts, getCart} = useCart()
-
-  console.log('cartProducts = ',  cartProducts[0]?.productsInCart?.length)
-
-
+  const { cartProducts, getCart } = useCart();
 
   // localStorage
   let wishlistProduct = localStorage.getItem("wishlistProduct");
@@ -70,10 +66,8 @@ export default function Header() {
   }
 
   useEffect(() => {
-    getCart()
-  }, [])
-
-
+    getCart();
+  }, []);
 
   return (
     <>
@@ -95,7 +89,7 @@ export default function Header() {
               },
             }}
           >
-            <DialogContent className="w-[150px] flex flex-col gap-4">
+            <DialogContent className="w-[170px] flex flex-col gap-4 py-4 px-3 text-[15px] text-gray-800 font-medium">
               <Link to={"/"}>Home</Link>
               <Link to={"/contact"}>Contact</Link>
               <Link to={"/about"}>About</Link>
@@ -110,7 +104,7 @@ export default function Header() {
                   <Link to={"/wishlist"}>
                     <FavoriteBorderIcon />
                     {wishlistProduct.length > 0 && (
-                      <span className="absolute top-[-6px] right-[-6px] bg-red-500 text-white text-[10px] rounded-full w-5 h-5 flex items-center justify-center">
+                      <span className="absolute -top-2 -right-2 bg-red-600 text-white text-[11px] font-semibold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
                         {wishlistProduct.length}
                       </span>
                     )}
@@ -120,14 +114,14 @@ export default function Header() {
                 <Link to={"card"}>
                   <Box className="flex items-start relative">
                     <ShoppingCartIcon />
-                    <p className="text-[12px] leading-[18px] text-[#FAFAFA] poppins absolute top-[-14px] right-[-6px] z-1 bg-red-500 p-0.5 rounded-[50%] px-[6px] ">
+                    <p className="absolute -top-3 -right-2 bg-red-600 text-white text-[11px] font-semibold rounded-full px-[6px] py-[2px] shadow-sm">
                       {cartProducts[0]?.productsInCart?.length}
                     </p>
                   </Box>
                 </Link>
               </Box>
             )}
-
+  
             <IconButton
               color="black"
               onClick={() => setProfilModal(!profilModal)}
@@ -142,10 +136,30 @@ export default function Header() {
             <img src={logo} alt="" />
           </Link>
           <div className="poppins flex gap-6">
-            <NavLink className='hover:text-blue-600 hover:underline underline-offset-4 transition duration-200' to={"/"}>Home</NavLink>
-            <NavLink className='hover:text-blue-600 hover:underline underline-offset-4 transition duration-200' to={"/contact"}>Contact</NavLink>
-            <NavLink className='hover:text-blue-600 hover:underline underline-offset-4 transition duration-200' to={"/about"}>About</NavLink>
-            <NavLink className='hover:text-blue-600 hover:underline underline-offset-4 transition duration-200' to={"/sign-up"}>Sign Up</NavLink>
+            <NavLink
+              className="hover:text-blue-600 hover:underline underline-offset-4 transition duration-200"
+              to={"/"}
+            >
+              Home
+            </NavLink>
+            <NavLink
+              className="hover:text-blue-600 hover:underline underline-offset-4 transition duration-200"
+              to={"/contact"}
+            >
+              Contact
+            </NavLink>
+            <NavLink
+              className="hover:text-blue-600 hover:underline underline-offset-4 transition duration-200"
+              to={"/about"}
+            >
+              About
+            </NavLink>
+            <NavLink
+              className="hover:text-blue-600 hover:underline underline-offset-4 transition duration-200"
+              to={"/sign-up"}
+            >
+              Sign Up
+            </NavLink>
           </div>
 
           <div className="flex items-center gap-4 ">
@@ -187,12 +201,14 @@ export default function Header() {
                   <Box className="flex items-start relative ">
                     <ShoppingCartIcon />
                     <p className="text-[12px] leading-[18px] text-[#FAFAFA] poppins absolute top-[-15px] right-[-5px] z-1 bg-red-500 p-0.5 rounded-[50%] px-[6px] ">
-                     {cartProducts.length > 0 ? cartProducts[0].productsInCart.length : 0}
+                      {cartProducts.length > 0
+                        ? cartProducts[0].productsInCart.length
+                        : 0}
                     </p>
                   </Box>
                 </Link>
               ) : (
-                <div  className="px-4"></div>
+                <div className="px-4"></div>
               )}
             </Box>
             {localStorage.getItem("token") ? (
@@ -227,8 +243,6 @@ export default function Header() {
                   <p>Logout</p>
                 </div>
               </div>
-
-              
             )}
           </div>
         </div>
